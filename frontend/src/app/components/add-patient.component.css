@@ -1,0 +1,35 @@
+.main{
+    /* width: 80%; */
+    margin: auto;
+    margin-top: 30px;
+    display: flex;
+}
+
+.field-row{
+    display: flex;
+    align-items: center;
+    margin-bottom: -30px;
+}
+
+
+
+mat-form-field{
+    margin-right: 10px;
+    margin-bottom: 10px;
+
+}
+
+
+.example-headers-align .mat-expansion-panel-header {
+    justify-content: space-between;
+    align-items: center;
+  }
+
+mat-icon{
+    margin-left: 8px;
+}
+  
+  .example-headers-align .mat-mdc-form-field + .mat-mdc-form-field {
+    margin-left: 8px;
+  }
+  

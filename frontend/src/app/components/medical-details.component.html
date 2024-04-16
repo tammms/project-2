@@ -1,0 +1,264 @@
+<!-- <button (click)="backToPatientDetails()" mat-raised-button>Back to Homepage</button> -->
+<mat-drawer-container style="background-color: #FFFFFF;">
+    <button mat-raised-button (click)="drawer.toggle()"
+        style="width: 100px; height: 100px; margin-top: 5px; margin-left: 5px;">
+        <img class="button-img" src="/assets/icons/logo.png" style="width: 200px; height: 200px;">
+    </button>
+    <mat-drawer #drawer mode="push" style="width: 250px;">
+        <div style="margin-top: 10px; margin-left: 10px;">
+            <button mat-button [routerLink]="['/patients']">
+                <mat-icon>home</mat-icon> Patient DashBoard</button>
+            <button mat-button [routerLink]="['/location']">
+                <mat-icon>health_and_safety</mat-icon>Search Amenities</button>
+            <button mat-button [routerLink]="['/guardian']">
+                <mat-icon>account_circle</mat-icon> Account Details</button>
+            <button mat-button [routerLink]="['/']">
+                <mat-icon>logout</mat-icon> Logout</button>
+        </div>
+    </mat-drawer>
+
+    <mat-card style="background-color: #E1E5F2;">
+        <mat-card-title style="margin-top: 10px;">Medical Particulars</mat-card-title>
+        <div class="description" style="margin-left: 11%; margin-top: 10px;" *ngIf="!addNew">
+            <button (click)="backToPatientDetails()" matTooltip="Changes made are not saved" mat-raised-button>Back to
+                Patient Details</button>
+
+            <button type="button" mat-raised-button style="margin-left: 8px; color: #1F7A8C;" (click)="addNewMed()">
+                Add Medication <mat-icon style="margin: 0;">add_circle</mat-icon>
+            </button>
+
+        </div>
+        <mat-card class="content" *ngIf="addNew">
+            <mat-card-content>
+                <div class="form-details">
+                    <form [formGroup]="medicationDosageForm" (submit)="addMedicationDosage()">
+                        <mat-label class="description">Medication Details</mat-label>
+                        <div class="field-row">
+                            <p>
+                                <mat-form-field *ngIf="!update" appearance="outline">
+                                    <input type="text" matInput formControlName="name" [formControl]="medNameControl"
+                                        [matAutocomplete]="auto">
+                                    <mat-autocomplete #auto="matAutocomplete">
+                                        <div *ngIf="filteredMeds$ | async as meds">
+                                            <mat-option *ngFor="let m of meds" [value]="m">
+                                                {{m}}
+                                            </mat-option>
+                                        </div>
+
+                                    </mat-autocomplete>
+                                    <mat-label>Medication Name</mat-label>
+                                    <mat-error
+                                        *ngIf="medicationDosageForm.get('name')?.hasError('required')&& medicationDosageForm.get('name')?.touched">Mandatory
+                                        Field
+                                    </mat-error>
+                                </mat-form-field>
+
+                                <mat-form-field *ngIf="update" appearance="outline">
+                                    <input type="text" matInput formControlName="name">
+                                    <mat-label>Medication Name</mat-label>
+                                    <mat-error
+                                        *ngIf="medicationDosageForm.get('name')?.hasError('required')&& medicationDosageForm.get('name')?.touched">Mandatory
+                                        Field
+                                    </mat-error>
+                                </mat-form-field>
+                            </p>
+
+                            <p>
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Medication Type </mat-label>
+                                    <mat-select formControlName="medicationType" (valueChange)="selectMedType($event)">
+                                        <mat-option value="tablet">
+                                            <img class="button-img" src="/assets/icons/tablet.png">
+                                            Tablet/Pill</mat-option>
+                                        <mat-option value="ointment">
+                                            <img class="button-img" src="/assets/icons/ointment.png">
+                                            Ointment/Cream
+                                        </mat-option>
+                                        <mat-option value="liquid">
+                                            <img class="button-img" src="/assets/icons/liquid.png">
+                                            Liquid(Oral)
+                                        </mat-option>
+                                        <mat-option value="injection">
+                                            <img class="button-img" src="/assets/icons/injection.png">
+                                            Injection</mat-option>
+                                    </mat-select>
+                                    <mat-error
+                                        *ngIf="medicationDosageForm.get('medicationType')?.hasError('required')">Mandatory
+                                        Field
+                                    </mat-error>
+                                </mat-form-field>
+                            </p>
+
+                        </div>
+                        <div class="field-row">
+                            <p>
+                                <mat-form-field appearance="outline">
+                                    <input type="number" formControlName="dosage" min="1" matInput>
+                                    <mat-label>Dosage: {{dosageUnits}}</mat-label>
+                                    <mat-error
+                                        *ngIf="medicationDosageForm.get('dosage')?.hasError('required')">Mandatory
+                                        Field
+                                    </mat-error>
+                                </mat-form-field>
+                            </p>
+                            <p>
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Frequency Units </mat-label>
+                                    <mat-select formControlName="frequencyUnits">
+                                        <mat-option value="daily">Daily</mat-option>
+                                        <mat-option value="weekly">Weekly</mat-option>
+                                    </mat-select>
+                                    <mat-error
+                                        *ngIf="medicationDosageForm.get('frequencyUnits')?.hasError('required')">Mandatory
+                                        Field
+                                    </mat-error>
+                                </mat-form-field>
+                            </p>
+                        </div>
+
+                        <div class="checkbox-container">
+
+                            <div *ngFor="let freq of frequencyCategory; let i = index" class="checkbox-column-medicine">
+
+                                <mat-checkbox (change)="addFrequency($event); editCheckBox()" [value]="freq"
+                                    [checked]="frequenciesChecked[freq]" #checkbox color="primary">
+                                    {{freq |titlecase}}</mat-checkbox>
+                            </div>
+                            <mat-error *ngIf="this.medicationDosageForm.get('frequency')?.value.length ==0 &&
+                        this.medicationDosageForm.get('frequency')?.touched">
+                                In-take frequency is required
+                            </mat-error>
+                        </div>
+
+                        <div class="field-row">
+                            <p>
+                                <mat-form-field style="width:350px; height: 120%;" appearance="outline">
+                                    <!-- <mat-form-field appearance="outline"> -->
+
+                                    <mat-label>Notes</mat-label>
+                                    <textarea matInput placeholder="Things to take note when administering"
+                                        formControlName="notes"></textarea>
+                                </mat-form-field>
+
+                            </p>
+                            <div style="margin-bottom: -20px;">
+                                <button class="buttons" type="submit" mat-raised-button color="primary"
+                                    [disabled]="medicationDosageForm.invalid"
+                                    [style.background-color]="medicationDosageForm.invalid ? 'lightgrey' : '#1F7A8C'"
+                                    style="justify-content:right;">
+                                    Add
+                                    <mat-icon>add_circle</mat-icon>
+                                </button>
+                                <button class="buttons" type="button" mat-raised-button color="accent" style="justify-content:right; margin-left: 5px;
+                                background-color: #FFFFFF; color: #1F7A8C;" *ngIf="update" (click)="discardChanges()">
+                                    Cancel
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                        </div>
+                    </form>
+                </div>
+            </mat-card-content>
+        </mat-card>
+        <div *ngIf="addedMeds$ | async as meds">
+            <mat-card class="content" *ngIf="meds.length>0">
+                <mat-card-content class="medication-table">
+
+                    <table mat-table [dataSource]="meds">
+                        <!-- <div *ngIf="medsFromStore"> -->
+                        <!-- <table mat-table *ngIf="medsFromStore.length>0" [dataSource]="medsFromStore"> -->
+
+                        <ng-container matColumnDef="name">
+                            <th mat-header-cell *matHeaderCellDef>Medication Name</th>
+                            <td mat-cell *matCellDef="let m">{{m.name |titlecase}}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="medicationType">
+                            <th mat-header-cell *matHeaderCellDef>Medication Type</th>
+                            <td mat-cell *matCellDef="let m">{{m.medicationType |titlecase}}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="dosage">
+                            <th mat-header-cell *matHeaderCellDef>Dosage</th>
+                            <td mat-cell *matCellDef="let m">{{m.dosage |titlecase}}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="edit">
+                            <th mat-header-cell *matHeaderCellDef>Edit/View</th>
+                            <td mat-cell *matCellDef="let m">
+                                <button mat-raised-button style="background-color:#1F7A8C ;
+                            color: #FFFFFF;" (click)="editMedicationDosage(m)">Edit</button>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="delete">
+                            <th mat-header-cell *matHeaderCellDef>Delete</th>
+                            <td mat-cell *matCellDef="let m">
+                                <button mat-raised-button style="color:#1F7A8C ;"
+                                    (click)="deleteMedicationDosage(m)">Delete</button>
+                            </td>
+                        </ng-container>
+
+
+                        <tr mat-header-row *matHeaderRowDef="tableHeaders"></tr>
+                        <tr mat-row *matRowDef="let row; columns: tableHeaders"></tr>
+                    </table>
+
+                </mat-card-content>
+            </mat-card>
+        </div>
+        <mat-card class="content" style="margin-bottom: 20px;">
+            <mat-card-content>
+                <div class="form-details" style="margin-bottom: 20px; margin-left: 10%;">
+                    <form [formGroup]="healthConditionsForm" (submit)="addMedicalDetails()">
+                        <mat-label class="description">Health Conditions</mat-label>
+
+                        <!-- <div [formGroup]="healthConditionsForm"> -->
+
+                        <div class="checkbox-container">
+
+                            <div *ngFor="let condition of healthCondition; let i = index"
+                                class="checkbox-column-health">
+
+                                <mat-checkbox (change)="onChange($event)" [value]="condition"
+                                    [checked]="conditionsChecked[condition]" #checkbox color="primary">
+                                    {{condition |titlecase}}</mat-checkbox>
+
+                                <mat-form-field *ngIf="condition == 'others'" appearance="outline"
+                                    style="margin-left: 8px;">
+                                    <mat-label>Specify Condition</mat-label>
+                                    <input type="text" matInput formControlName="otherConditions"
+                                        (change)="inputOthers($event)">
+                                    <mat-error
+                                        *ngIf="healthConditionsForm.get('otherConditions')?.hasError('required')">Please
+                                        specify medical condition
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <!-- <div style="display: flex; flex-direction:row; align-items: flex-end;" class = "field-row"> -->
+                        <div class="field-row">
+                            <mat-form-field style="width:350px; height: 100px;" appearance="outline">
+                                <mat-label>Notes</mat-label>
+                                <textarea matInput placeholder="Other Medical Notes to Take note of"
+                                    formControlName="notes"></textarea>
+                            </mat-form-field>
+                            <div style="margin-bottom: -20px; margin-left: 30%;">
+                                <button class="buttons" type="submit" mat-raised-button
+                                    style="background-color: #1F7A8C; color:#FFFFFF ;"
+                                    [disabled]="healthConditionsForm.invalid">Save
+                                    <mat-icon>add_box</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </mat-card-content>
+        </mat-card>
+    </mat-card>
+</mat-drawer-container>

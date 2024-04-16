@@ -1,0 +1,50 @@
+<mat-card>
+    
+        <mat-card-title>Login</mat-card-title>
+    <mat-card-content style="margin-left: 100px;">
+        <form [formGroup]="signInForm" (submit)="login()">
+
+            <p>
+                <mat-form-field>
+                    <input type="text" formControlName="email" matInput>
+                    <mat-icon matSuffix fontIcon="email"></mat-icon>
+                    <mat-label>Email</mat-label>
+                    <mat-error *ngIf="signInForm.get('email')?.hasError('required')">Email is a Mandatory Field
+                    </mat-error>
+                    <mat-error *ngIf="signInForm.get('email')?.hasError('email')">Invalid Email format
+                    </mat-error>
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field>
+                    <input matInput [type]="hide ? 'password' : 'text'" matInput formControlName="password">
+                    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                        [attr.aria-pressed]="hide">
+                        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    </button>
+                    <mat-label>Password</mat-label>
+                    <mat-error *ngIf="signInForm.get('password')?.hasError('required')">Password is a Mandatory
+                        Field
+                    </mat-error>
+                    <mat-error *ngIf="signInForm.get('password')?.hasError('minlength')">Password should have at
+                        least 8
+                        Characters
+                    </mat-error>
+                </mat-form-field>
+            </p>
+            <div>
+                <!-- <button type="submit" mat-raised-button color="primary" [disabled]="signInForm.invalid">Login</button> -->
+
+                <button type="submit" mat-raised-button [disabled]="signInForm.invalid"
+                    style="margin-right: 5px;">Login</button>
+                <button type="button" mat-raised-button [routerLink]="['/guardian']">Sign Up</button>
+            </div>
+
+
+        </form>
+        <img class="button-img" src="/assets/icons/logo.png" 
+        style="width: 250px; height: 250px; margin-top: -40px; margin-left: -50px;">
+
+    </mat-card-content>
+
+</mat-card>

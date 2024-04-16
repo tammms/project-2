@@ -1,0 +1,94 @@
+<mat-card>
+    <mat-card-title>Guardian Details</mat-card-title>
+    <mat-card-content>
+        <form [formGroup]="signUpForm" (submit)="signUp()">
+
+            <div class="field-row">
+                <p>
+                    <mat-form-field>
+                        <input type="text" formControlName="firstName" matInput>
+                        <mat-label>First Name</mat-label>
+
+                        <mat-error *ngIf="signUpForm.get('firstName')?.hasError('required')">First Name is a Mandatory
+                            Field
+                        </mat-error>
+                        <mat-error *ngIf="signUpForm.get('firstName')?.hasError('minlength')">First Name should have at
+                            least 3 Characters
+                        </mat-error>
+                    </mat-form-field>
+                </p>
+                <p>
+                    <mat-form-field>
+                        <input type="text" formControlName="lastName" matInput>
+                        <mat-label>Last Name</mat-label>
+
+                        <mat-error *ngIf="signUpForm.get('lastName')?.hasError('required')">Last Name is a Mandatory
+                            Field
+                        </mat-error>
+                        <mat-error *ngIf="signUpForm.get('lastName')?.hasError('minlength')">Last Name should have at
+                            least 3 Characters
+                        </mat-error>
+                    </mat-form-field>
+                </p>
+                <p>
+                    <mat-form-field>
+                        <input type="number" formControlName="phoneNo" matInput>
+                        <mat-label>Phone Number</mat-label>
+
+                        <mat-error *ngIf="signUpForm.get('phoneNo')?.hasError('required')">Phone Number is a Mandatory
+                            Field
+                        </mat-error>
+                        <mat-error *ngIf="signUpForm.get('phoneNo')?.hasError('pattern')">Invalid Phone Number Format
+                        </mat-error>
+                    </mat-form-field>
+                </p>
+            </div>
+
+            <div class="field-row">
+                <p>
+                    <mat-form-field>
+                        <input type="text" formControlName="email" matInput>
+                        <mat-label>Email</mat-label>
+
+                        <mat-error *ngIf="signUpForm.get('email')?.hasError('required')">Email is a Mandatory Field
+                        </mat-error>
+                        <mat-error *ngIf="signUpForm.get('email')?.hasError('email')">Invalid Email format
+                        </mat-error>
+                    </mat-form-field>
+                </p>
+                <p>
+                    <mat-form-field>
+                        <input matInput [type]="hide ? 'password' : 'text'" matInput formControlName="password">
+                        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                            [attr.aria-pressed]="hide">
+                            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                        </button>
+                        <mat-label>Password</mat-label>
+                        <mat-error *ngIf="signUpForm.get('password')?.hasError('required')">Password is a Mandatory
+                            Field
+                        </mat-error>
+                        <mat-error *ngIf="signUpForm.get('password')?.hasError('minlength')">Password should have at
+                            least 8 Characters
+                        </mat-error>
+                    </mat-form-field>
+                </p>
+            </div>
+
+            <div *ngIf="!isEdit">
+                <button class="buttons" type="submit" mat-raised-button color="primary"
+                    [disabled]="signUpForm.invalid">Sign Up</button>
+            </div>
+            <div *ngIf="isEdit">
+                <button class="buttons" type="button" (click)="saveChanges()"
+                 mat-raised-button color="primary"
+                    [disabled]="signUpForm.invalid">Save Changes</button>
+                <button class="buttons" type="button" mat-raised-button
+                style="background-color: #1F7A8C; color: #FFFFFF;"
+                    [routerLink]="['/patients']">Discard Changes</button>
+            </div>
+
+
+        </form>
+    </mat-card-content>
+
+</mat-card>

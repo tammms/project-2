@@ -1,0 +1,76 @@
+mat-card {
+    width: 80%;
+    margin: auto;
+    margin-top: 30px;
+  }
+  
+  .field-row {
+    display: flex;
+    align-items: center;
+  }
+  
+  mat-card-title,
+  mat-card-content {
+    display: flex;
+    justify-content: center;
+  }
+  
+  mat-form-field {
+    margin-right: 10px;
+  }
+  
+  table {
+    width: 100%;
+  }
+  
+  
+  .mat-mdc-row .mat-mdc-cell {
+    border-bottom: 1px solid transparent;
+    border-top: 1px solid transparent;
+    cursor: pointer;
+  }
+  
+  .mat-mdc-row:hover .mat-mdc-cell {
+    border-color: currentColor;
+  }
+  
+  
+  span {
+    font-weight: 500;
+  
+  }
+  
+  .details-row {
+    display: flex;
+    margin: 0;
+  }
+  
+  .row-content{
+    margin-right: 20px;
+    margin-top: 0;
+  
+  }
+  
+  .notifications{
+    display: flex;
+    justify-content: center;
+    width: 900px;
+  
+  }
+  
+  span{
+    margin-right: 3px;
+  }
+  
+  p{
+    font-size: medium;
+  }
+  
+  
+  .valid-event {
+    background-color: #BFDBF7; 
+  }
+  
+  .invalid-event {
+    background-color: #9FFFCB; 
+  }

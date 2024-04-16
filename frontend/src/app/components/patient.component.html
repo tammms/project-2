@@ -1,0 +1,250 @@
+<mat-drawer-container style="background-color: #FFFFFF;">
+    <button mat-raised-button (click)="drawer.toggle()"
+        style="width: 100px; height: 100px; margin-top: 5px; margin-left: 5px;">
+        <img class="button-img" src="/assets/icons/logo.png" style="width: 200px; height: 200px;">
+    </button>
+    <mat-drawer #drawer mode="push" style="width: 250px;">
+        <div style="margin-top: 10px; margin-left: 10px;">
+            <button mat-button [routerLink]="['/patients']">
+                <mat-icon>home</mat-icon> Patient DashBoard</button>
+            <button mat-button [routerLink]="['/location']">
+                <mat-icon>health_and_safety</mat-icon>Search Amenities</button>
+            <button mat-button [routerLink]="['/guardian']">
+                <mat-icon>account_circle</mat-icon> Account Details</button>
+            <button mat-button [routerLink]="['/']">
+                <mat-icon>logout</mat-icon> Logout</button>
+        </div>
+    </mat-drawer>
+
+    <!-- <button [routerLink]="['/patients']" mat-raised-button>Back to Homepage</button> -->
+
+    <mat-card class="main">
+        <mat-tab-group dynamicHeight style="background-color: #E1E5F2;">
+
+            <mat-tab label="Personal Details">
+                <div *ngIf="patientDetails$ |async as patient">
+                    <div *ngIf="!isEdit">
+                        <div class="details-content">
+                            <mat-card>
+                                <mat-card-header>
+                                    <mat-card-title>
+                                        Patient Profile
+                                    </mat-card-title>
+                                </mat-card-header>
+                                <mat-card-content>
+                                    <div class="details-row">
+                                        <p class="first-column">
+                                            <span>Name: </span>{{patient.patientFirstName |titlecase}}
+                                            {{patient.patientLastName
+                                            |titlecase}}
+                                        </p>
+                                        <p>
+                                            <span>Gender: </span>{{patient.patientGender |titlecase}}
+                                        </p>
+                                    </div>
+                                    <div class="details-row">
+                                        <p class="first-column">
+                                            <span>Date of Birth: </span>{{patient.patientBirthDate}}
+                                        </p>
+                                        <p>
+                                            <span>Age: </span>{{patient.age}}
+                                        </p>
+                                    </div>
+
+                                    <div class="details-row">
+                                        <p class="first-column">
+                                            <span>Relationship: </span>{{patient.patientRelation |titlecase}}
+                                        </p>
+                                    </div>
+                                </mat-card-content>
+
+                            </mat-card>
+                            <div style="display: flex; margin-top:10px;">
+                                <button (click)="deletePatient()" matTooltip="Delete Patient Record" mat-mini-fab
+                                    style="margin-right: 5px; background-color: #022B3A;"><mat-icon>delete</mat-icon></button>
+
+                                <div>
+                                    <button type="button" mat-mini-fab (click)="editPatient()"
+                                        matTooltip="Edit Patient Details"
+                                        style="background-color: #1F7A8C;"><mat-icon>edit</mat-icon></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="isEdit" style="margin-left: 20%; margin-bottom: 50px;">
+                        <app-add-patient [isEdit]="isEdit" [patientDetails]="patient"></app-add-patient>
+                    </div>
+                </div>
+            </mat-tab>
+
+            <mat-tab label="Medical Details">
+
+                <div class="medical-details-content">
+                    <div class="buttons-container">
+                        <div matTooltip="Only Admin can Edit Medical Details"
+                            [matTooltipDisabled]="!hasEditingAuthority()">
+                            <button type="button" mat-raised-button
+                                [style.color]="hasEditingAuthority() ? 'grey' : '#1F7A8C'"
+                                [routerLink]="['/medicalInput']" [disabled]="hasEditingAuthority()"
+                                class="admin-button">Edit Medical Details</button>
+                        </div>
+                        <div matTooltip="Only Admin can Delete Details" [matTooltipDisabled]="!hasEditingAuthority()">
+                            <button type="button" mat-raised-button
+                                [style.color]="canDeleteAuthority() ? 'grey' : '#1F7A8C'" (click)="deleteRecord()"
+                                [disabled]="canDeleteAuthority()" class="admin-button">Delete All Medical
+                                Records</button>
+                        </div>
+                    </div>
+                    <!-- <div *ngIf="medicalDetails$ |async as medicine; else noRecords"> -->
+                    <div *ngIf="medicineDetails ; else noRecords">
+                        <mat-card>
+                            <mat-card-header>
+                                <mat-card-title>
+                                    Health Conditions
+                                </mat-card-title>
+                            </mat-card-header>
+                            <mat-card-content>
+                                <ul>
+                                    <li *ngFor=" let condition of medicineDetails.healthConditionList">
+                                        <p>{{condition |titlecase}}</p>
+                                    </li>
+                                </ul>
+                            </mat-card-content>
+
+                        </mat-card>
+                        <br><br>
+                        <mat-card *ngIf="medicineDetails.notes">
+                            <mat-card-header>
+                                <mat-card-title>
+                                    Medical Notes
+                                </mat-card-title>
+                            </mat-card-header>
+                            <mat-card-content>
+                                <p>{{medicineDetails.notes}}</p>
+                            </mat-card-content>
+
+                        </mat-card>
+                        <br><br>
+                        <mat-card *ngIf="medicineDetails.medicationList; else noMedicationRecord">
+                            <mat-card-header>
+                                <mat-card-title>
+                                    Medication Details
+                                </mat-card-title>
+                            </mat-card-header>
+                            <mat-tab-group>
+                                <mat-tab label="Medications">
+                                    <div class="tab-content">
+                                        <div class="frequencyUnits">
+                                            <mat-chip *ngFor="let freq of displayCategory"
+                                                style="margin-right: 3px; background-color: #E1E5F2;">{{freq.displayValue}}</mat-chip>
+                                        </div>
+
+                                        <div class="accordion-container">
+                                            <mat-accordion>
+                                                <mat-expansion-panel
+                                                    *ngFor="let medication of medicineDetails.medicationList">
+
+                                                    <mat-expansion-panel-header style="height:fit-content ;">
+                                                        <mat-panel-title>
+                                                            <p style="font-size: 15px;">{{medication.name}}</p>
+                                                        </mat-panel-title>
+                                                        <mat-panel-description>
+                                                            <div style="justify-content: space-around;">
+                                                                <p class="med-details">Intake Frequencies:
+                                                                    {{medication.frequency.length}}</p>
+                                                                <p class="med-details"><span>Intake:
+                                                                    </span>{{medication.frequencyUnits |titlecase}}</p>
+                                                            </div>
+
+                                                            <div style="justify-content: end; margin-left: 100px;">
+                                                                <img src="/assets/icons/{{medication.medicationType}}.png"
+                                                                    class="med-icon">
+                                                            </div>
+                                                        </mat-panel-description>
+                                                    </mat-expansion-panel-header>
+
+                                                    <img src="{{medication.imageUrl}}" style="width: 25%;">
+                                                    <mat-chip-set>
+                                                        <mat-chip *ngFor="let freq of medication.frequency"
+                                                            style="background-color: #E1E5F2;"
+                                                            selected>{{freq}}</mat-chip>
+                                                    </mat-chip-set>
+
+                                                    <div
+                                                        style="margin-top: 20px; display: flex; flex-direction:column;">
+                                                        <div>
+                                                            <div class="details-row" style="display: flex;">
+                                                                <p class="row-content med-details"><span>Medication
+                                                                        Type:
+                                                                    </span>{{medication.medicationType |titlecase }}</p>
+                                                                <p class="row-content med-details"><span>Doasage:
+                                                                    </span>{{medication.dosage}}</p>
+                                                            </div>
+                                                            <p class="med-details"><span>Uses:
+                                                                </span>{{medication.uses}}
+                                                            </p>
+                                                            <p class="med-details" *ngIf="medication.notes"><span>Notes:
+                                                                </span>{{medication.notes}}</p>
+                                                            <p class="med-details"><span>Potential Side Effects:
+                                                                </span>{{medication.sideEffect}}</p>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </mat-expansion-panel>
+                                            </mat-accordion>
+                                        </div>
+                                    </div>
+                                </mat-tab>
+
+                                <div *ngIf="patientDetails$ |async as patient">
+                                    <!-- <div *ngIf="hasInitialised"> -->
+                                    <mat-tab label="Reminder Settings">
+                                        <app-reminder-form [patientFirstName]="patient.patientFirstName"
+                                            [medFrequencies]="medFrequencies"
+                                            [frequencyStatus]="frequencyStatus"></app-reminder-form>
+                                    </mat-tab>
+                                    <!-- </div> -->
+                                </div>
+                            </mat-tab-group>
+
+                        </mat-card>
+
+                        <div>
+                            <ng-template #noMedicationRecord>
+                                <mat-card>
+                                    <h3>No Medication Records Added</h3>
+                                </mat-card>
+                            </ng-template>
+                        </div>
+                    </div>
+                    <div>
+                        <ng-template #noRecords>
+                            <p style="font-weight: 500;">No Health Records Added</p>
+                        </ng-template>
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+
+    </mat-card>
+
+    <mat-card class="main" style="margin-bottom: 20px;">
+        <mat-card-header style="display: flex; justify-content: center;">
+            <mat-card-title>
+                Upcoming Reminders for {{patientName |titlecase}}
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div>
+                <button type="button" mat-stroked-button [routerLink]="['/forms']"
+                    style="margin-left: 8px; color:#1F7A8C;">
+                    Create Reminder <mat-icon style="margin: 0;">add_circle</mat-icon>
+                </button>
+            </div>
+            <app-reminder-summary [eventList]="eventList" [dailyList]="dailyList"></app-reminder-summary>
+        </mat-card-content>
+
+    </mat-card>
+</mat-drawer-container>

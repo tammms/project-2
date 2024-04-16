@@ -1,0 +1,146 @@
+<mat-card>
+    <mat-card-title>Reminder Details</mat-card-title>
+    <mat-card-content>
+        <form [formGroup]="eventsForm" (submit)="saveReminder()">
+            <div class="field-row">
+                <p>
+                    <mat-form-field appearance="outline" style="width: 500px;">
+                        <input type="text" formControlName="summary" matInput>
+                        <mat-label>Title</mat-label>
+                        <mat-error class="date-error" *ngIf="eventsForm.get('summary')?.hasError('required')">Reminder
+                            Title is a Mandatory
+                            Field</mat-error>
+                    </mat-form-field>
+                </p>
+            </div>
+            <div class="field-row">
+                <p>
+                    <mat-form-field appearance="outline" style="width: 500px;">
+                        <input type="text" formControlName="location" matInput>
+                        <mat-label>Location</mat-label>
+                    </mat-form-field>
+                </p>
+            </div>
+            <p>
+                <mat-form-field appearance="outline" style="width: 500px;">
+                    <textarea formControlName="description" rows="4" matInput></textarea>
+                    <mat-label>Description</mat-label>
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field appearance="outline">
+                    <mat-label>Start Date</mat-label>
+                    <input matInput [matDatepickerFilter]="startDateFilter" [matDatepicker]="pickerStart"
+                        formControlName="startDate">
+                    <mat-hint>MM/DD/YYYY</mat-hint>
+                    <mat-datepicker-toggle matIconSuffix [for]="pickerStart"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerStart></mat-datepicker>
+                </mat-form-field>
+                <!-- <mat-error class="error" *ngIf="eventsForm.get('startDate')?.hasError('dateValidation')">Reminder Start Date cannot be a Past Date</mat-error> -->
+                <mat-form-field class="input-field">
+                    <input type="text" formControlName="startTime" matInput placeholder="00:00">
+                    <mat-label>Start time</mat-label>
+                    <mat-error class="date-error" *ngIf="eventsForm.get('startTime')?.hasError('required')">Start Time
+                        is a Mandatory
+                        Field</mat-error>
+                    <mat-error class="date-error" *ngIf="eventsForm.get('startTime')?.hasError('pattern')">Invalid Time
+                        Format:
+                        (00:00)</mat-error>
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field appearance="outline">
+                    <mat-label>End Date</mat-label>
+                    <input matInput [matDatepickerFilter]="endDateFilter" [matDatepicker]="pickerEnd"
+                        formControlName="endDate">
+                    <mat-hint>MM/DD/YYYY</mat-hint>
+                    <mat-datepicker-toggle matIconSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerEnd></mat-datepicker>
+                </mat-form-field>
+                <mat-error class="error" *ngIf="eventsForm.get('endDate')?.hasError('dateValidation')">End Date
+                    cannot be Earlier than Start Date</mat-error>
+                <mat-form-field class="input-field">
+                    <input type="text" formControlName="endTime" matInput placeholder="00:00">
+                    <mat-label>End time</mat-label>
+                    <mat-error class="date-error" *ngIf="eventsForm.get('endTime')?.hasError('required')">End
+                        Time is a Mandatory Field</mat-error>
+                    <mat-error class="date-error" *ngIf="eventsForm.get('endTime')?.hasError('pattern')">Invalid
+                        Time Format: (00:00)</mat-error>
+                    <mat-error class="date-error" *ngIf="eventsForm.get('endTime')?.hasError('timeValidation')">End time
+                        should not be
+                        Earlier than Start time for same-day events</mat-error>
+                </mat-form-field>
+            </p>
+
+            <p>
+                <mat-slide-toggle color="primary" (change)="repeatReminder($event)">Repeat Reminder</mat-slide-toggle>
+            </p>
+
+            <mat-accordion>
+                <mat-expansion-panel [disabled]="!isRepeat" [expanded]="isRepeat" #panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title class="description">
+                            {{repeatDescription}}
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div style="margin-top: 0;">
+                        <p class="reminder-label" style="margin-top: 0;">Schedule</p>
+                        <mat-radio-group class="repeat-radio-group" formControlName="frequencyUnits"
+                            (change)="setFrequencyUnits()">
+                            <mat-radio-button *ngFor="let freq of frequencyCategory" color="primary"
+                                [value]="freq.value">
+                                Every <input type="number" class="repeatInput" placeholder="1"
+                                    formControlName="frequency" min="1" max="30"> {{freq.displayValue}}
+                            </mat-radio-button>
+                            <mat-error *ngIf="eventsForm.get('frequencyUnits')?.hasError('required')">Repeat
+                                Frequency
+                                is a Mandatory field
+                            </mat-error>
+                        </mat-radio-group>
+
+
+                    </div>
+
+                </mat-expansion-panel>
+            </mat-accordion>
+            <p>
+                <mat-slide-toggle (change)="addAttendees($event)" color="primary">Send Reminder To
+                    Calendar</mat-slide-toggle>
+            </p>
+            <p *ngIf="sendEmail">
+                <mat-form-field style="display: flex;" appearance="outline">
+                    <mat-label>Attendee Emails</mat-label>
+                    <mat-chip-grid #chipGrid formArrayName="attendees" (valueChange)="checkValid()">
+                        <div *ngIf="attendeesArray.controls">
+                            <mat-chip-row *ngFor="let control of attendeesArray.controls; let i = index;"
+                                (removed)="removeAttendee(i)">
+                                {{control.value}} <button matChipRemove><mat-icon>cancel</mat-icon></button>
+                            </mat-chip-row>
+                        </div>
+                        <input type="text" [matChipInputFor]="chipGrid" [matChipInputAddOnBlur]="addOnBlur"
+                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                            (matChipInputTokenEnd)="addAttendee($event)" (click)="checkValid()">
+                    </mat-chip-grid>
+                    <mat-hint style="color: #022B3A;">Attendees must have Google Calendar Access</mat-hint>
+
+
+                </mat-form-field>
+                <mat-error class="error" *ngIf="eventsForm.get('attendees')?.hasError('invalidEmail')">Invalid
+                    Email Format of Attendees added</mat-error>
+                <mat-error class="error" *ngIf="eventsForm.get('attendees')?.hasError('isrequired')">Input Email
+                    recipients of Google Calender invite</mat-error>
+            </p>
+
+            <div>
+                <button class="buttons" type="submit" mat-raised-button 
+                    
+                    [style.background-color]="isInvalid() ? 'lightgrey' : '#1F7A8C'"
+                    style="color:#FFFFFF;"
+                    [disabled]="isInvalid()">Create Reminder</button>
+            </div>
+
+        </form>
+
+    </mat-card-content>
+
+</mat-card>

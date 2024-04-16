@@ -1,0 +1,82 @@
+mat-card {
+  width: 1000px;
+  margin: auto;
+  margin-top: 30px;
+}
+
+.field-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: -15px;
+}
+
+mat-card-title,
+mat-card-content {
+  display: flex;
+  justify-content: center;
+}
+
+mat-form-field {
+  margin-right: 10px;
+  font-size: 16px;
+  height: 70px;
+
+}
+
+mat-icon {
+  margin-left: 8px;
+}
+
+.example-headers-align .mat-mdc-form-field+.mat-mdc-form-field {
+  margin-left: 8px;
+}
+
+.checkbox-container {
+  
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  
+}
+
+.checkbox-column-medicine {
+  flex: 0 0 calc(50% - 150px);
+  align-items: center; 
+}
+
+.checkbox-column-health {
+  flex: 0 0 calc(50% - 80px);
+  align-items: center; 
+}
+
+
+.form-details{
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  justify-content: center;
+}
+
+.medication-table{
+  margin: auto;
+  margin-top: 20px;
+  width: 80%;
+}
+
+mat-label.description{
+  font-weight:500;
+}
+
+.button-img{
+  width: 20px;
+} 
+
+.mat-column-name{
+  width: 35%;
+}
+
+.content{
+  width: 95%;
+}
+

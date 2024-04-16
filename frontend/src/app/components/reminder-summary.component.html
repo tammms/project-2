@@ -1,0 +1,114 @@
+<!-- <mat-card *ngIf="eventList.length>0 || dailyList.length; else noReminder">
+    <mat-card-content class="notifications"> -->
+        <div *ngIf="eventList.length>0 || dailyList.length; else noReminder">
+        <div class="notifications">
+        <mat-tab-group style="width: 70%; margin-bottom: 20px;" mat-align-tabs="stretch">
+            <mat-tab *ngIf="eventList.length>0" 
+                label="Event Reminders">
+                <mat-accordion #accordion="matAccordion">
+                    <mat-expansion-panel *ngFor="let event of eventList"
+                    [ngClass]="{ 'valid-event': event.isValid, 'invalid-event': !event.isValid }">
+                        <mat-expansion-panel-header style="height:fit-content;">
+                            <mat-panel-title>
+                                {{event.summary |titlecase}}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                <div style="justify-content: space-around;">
+                               <p>Name: {{event.patientName |titlecase}}</p> 
+                               <p><span>Reminder Date: </span>{{event.startDate}}</p>
+                                <div *ngIf="event.isRepeat">
+                                    <mat-icon>event_repeat</mat-icon>
+                                </div>
+                            </div>
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <div style="margin-top: 0; display: flex; flex-direction:column;">
+                            <div>
+                                <p><span>Name: </span>{{event.patientName |titlecase}}</p>
+                                <p><span>Description: </span>{{event.description}}</p>
+                                <p><span>Location: </span>{{event.location}}</p>
+                                <div *ngIf="!event.isRepeat">
+                                    <div class="details-row">
+                                        <p class="row-content"><span>Start Date: </span>{{event.startDate}}</p>
+                                        <p class="row-content"><span>Start Time: </span>{{event.startTime}}</p>
+                                    </div>
+    
+                                    <div class="details-row" style="display: flex;">
+                                        <p class="row-content"><span>End Date: </span>{{event.endDate}}</p>
+                                        <p class="row-content"><span>End Time: </span>{{event.endTime}}</p>
+                                    </div>
+
+                                </div>
+
+                                <div *ngIf="event.isRepeat">
+                                    <div class="details-row">
+                                        <p class="row-content"><span>Start Date: </span>{{event.startDate}}</p>
+                                    </div>
+    
+                                    <div class="details-row" style="display: flex;">
+                                        <p class="row-content"><span>Start Time: </span>{{event.startTime}}</p>
+                                        <p class="row-content"><span>End Time: </span>{{event.endTime}}</p>
+                                    </div>
+
+                                </div>
+                                
+                                <div *ngIf="event.isRepeat" class="details-row" style="display: flex;">
+                                    <p class="row-content"><span>Repeat Frequency: </span>{{setDescription(event)}}</p>
+                                </div>
+                                <div *ngIf="event.sendEmail">
+                                    <span>Google calender invites: </span>
+                                    <mat-chip-set>
+                                        <mat-chip *ngFor="let email of event.attendees"
+                                        style="background-color: #FFFFFF;">
+                                            {{email}}</mat-chip>
+                                    </mat-chip-set>
+                                </div>
+                            </div>
+                            <div>
+                                <button type="button" mat-mini-fab style="background-color: #022B3A ;"
+                                    (click)="deleteReminder(event.eventId, event.reminderType); accordion.closeAll()">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </mat-tab>
+            <mat-tab *ngIf="dailyList.length>0" label="Daily Reminders">
+                <mat-accordion #accordion="matAccordion">
+                    <mat-expansion-panel *ngFor="let daily of dailyList"
+                    class="valid-event">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{daily.description |titlecase}}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                <p><span>Name: </span>{{daily.patientName |titlecase}}</p>
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <div style="display: flex; justify-content: space-between;">
+                            <mat-chip-set>
+                                <mat-chip *ngFor="let time of daily.startTime"
+                                style="background-color: #FFFFFF;">
+                                    {{time}}</mat-chip>
+                            </mat-chip-set>
+                            <div>
+                                <button type="button" mat-mini-fab style="background-color: #022B3A ;"
+                                    (click)="deleteReminder(daily.eventId, daily.reminderType); accordion.closeAll()">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </mat-tab>
+            
+        </mat-tab-group>
+        </div>
+    <!-- </mat-card-content>
+</mat-card> -->
+</div>
+<ng-template #noReminder>
+    <mat-card-title style="color: gray; margin-bottom: 10px; margin-top: 10px;">
+        No Upcoming Events</mat-card-title>
+</ng-template>

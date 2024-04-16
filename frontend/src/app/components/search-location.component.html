@@ -1,0 +1,163 @@
+<mat-drawer-container style="background-color: #FFFFFF;">
+    <button mat-raised-button (click)="drawer.toggle()"
+        style="width: 100px; height: 100px; margin-top: 5px; margin-left: 5px;">
+        <img class="button-img" src="/assets/icons/logo.png" style="width: 200px; height: 200px;">
+    </button>
+    <mat-drawer #drawer mode="push" style="width: 250px;">
+        <div style="margin-top: 10px; margin-left: 10px;">
+            <button mat-button [routerLink]="['/patients']">
+                <mat-icon>home</mat-icon> Patient DashBoard</button>
+            <button mat-button [routerLink]="['/location']">
+                <mat-icon>health_and_safety</mat-icon>Search Amenities</button>
+            <button mat-button [routerLink]="['/guardian']">
+                <mat-icon>account_circle</mat-icon> Account Details</button>
+            <button mat-button [routerLink]="['/']">
+                <mat-icon>logout</mat-icon> Logout</button>
+        </div>
+    </mat-drawer>
+
+
+    <mat-card style="background-color: #E1E5F2;">
+        <mat-card-title style="margin-top: 20px; ">Search Amentities Around You</mat-card-title>
+        <mat-card-content>
+            <form [formGroup]="locationSearchForm" (submit)="search()">
+                <div class="field-row">
+                    <p>
+                        <mat-form-field>
+                            <input type="text" formControlName="postalCode" matInput>
+                            <mat-label>Postal Code</mat-label>
+                            <mat-error *ngIf="locationSearchForm.get('postalCode')?.hasError('required')">Postal Code is
+                                a
+                                Mandatory
+                                Field
+                            </mat-error>
+                            <mat-error *ngIf="locationSearchForm.get('postalCode')?.hasError('pattern')">Invalid Postal
+                                Code
+                                Pattern
+                            </mat-error>
+                        </mat-form-field>
+                    </p>
+
+                    <p>
+                        <mat-form-field>
+                            <mat-select formControlName="amenities">
+                                <mat-option *ngFor="let am of amentitiesCategory"
+                                    [value]="am.value">{{am.displayValue}}</mat-option>
+                            </mat-select>
+                            <mat-label>Amenities</mat-label>
+                            <mat-error *ngIf="locationSearchForm.get('amenities')?.hasError('required')">Amentities is a
+                                Mandatory
+                                Field
+                            </mat-error>
+                        </mat-form-field>
+                    </p>
+                    <p>
+                        <mat-form-field>
+                            <mat-select formControlName="distance">
+                                <mat-option *ngFor="let dist of distanceFromLocation"
+                                    [value]="dist.value">{{dist.displayValue}}</mat-option>
+                            </mat-select>
+                            <mat-label>Distance</mat-label>
+
+                            <mat-error *ngIf="locationSearchForm.get('distance')?.hasError('required')">Distance is a
+                                Mandatory
+                                Field
+                            </mat-error>
+                        </mat-form-field>
+                    </p>
+                </div>
+                <button class="buttons" type="submit" mat-raised-button
+                    [style.background-color]="locationSearchForm.invalid ? 'lightgrey' : '#1F7A8C'"
+                    [style.color]="locationSearchForm.invalid ? 'grey' : '#FFFFFF'"
+                    [disabled]="locationSearchForm.invalid">Search</button>
+            </form>
+        </mat-card-content>
+    </mat-card>
+
+    <div *ngIf="distanceList.length>0 && !showMap">
+        <mat-card>
+            <mat-card-header style="margin-bottom: 50px;">
+                <mat-card-title>{{searchAddress}}</mat-card-title>
+                <!-- <mat-card-subtitle>{{searchAddress}}</mat-card-subtitle> -->
+            </mat-card-header>
+            <mat-card-content>
+
+                <table mat-table [dataSource]="distanceList">
+                    <ng-container matColumnDef="location">
+                        <th mat-header-cell *matHeaderCellDef>Location</th>
+                        <td mat-cell *matCellDef="let loc">{{loc.endName |titlecase}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="address">
+                        <th mat-header-cell *matHeaderCellDef>Address</th>
+                        <td mat-cell *matCellDef="let loc">{{loc.endAddress |titlecase}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="postalCode">
+                        <th mat-header-cell *matHeaderCellDef>Postal Code</th>
+                        <td mat-cell *matCellDef="let loc">{{loc.endPostalCode}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="distance">
+                        <th mat-header-cell *matHeaderCellDef>Distance(KM)</th>
+                        <td mat-cell *matCellDef="let loc">{{loc.distance}}</td>
+                    </ng-container>
+
+
+
+                    <ng-container matColumnDef="map">
+                        <th mat-header-cell *matHeaderCellDef>View Map</th>
+                        <td mat-cell *matCellDef="let loc">
+                            <button mat-icon-button style="color:#1F7A8C ;" (click)="getMap(loc)">
+                                <mat-icon>location_on</mat-icon></button>
+                        </td>
+                    </ng-container>
+
+
+                    <tr mat-header-row *matHeaderRowDef="tableHeaders"></tr>
+                    <tr mat-row *matRowDef="let row; columns: tableHeaders"></tr>
+
+                </table>
+            </mat-card-content>
+        </mat-card>
+
+    </div>
+
+
+
+
+
+    <div *ngIf="distanceList.length<0 && hasSearched;">
+        <mat-card>
+            <mat-card-title>No Location found</mat-card-title>
+        </mat-card>
+    </div>
+
+
+
+
+    <!-- <img src="'data:image/png;base64,{{imgUrl}}'" height="400" width="400"> -->
+    <!-- <img [src]="imgUrl"> -->
+
+    <div *ngIf="showMap">
+        <mat-card>
+            <mat-card-content>
+                <div>
+                    <div>
+                        <p><span>Start Address: </span>{{distance.startAddress}}</p>
+                        <p><span>Start Postal Code: </span>{{distance.startPostalCode}}</p>
+                    </div>
+                    <div>
+                        <p><span>End Address: </span>{{distance.endAddress}}</p>
+                        <p><span>End Postal Code: </span>{{distance.endPostalCode}}</p>
+                        <p><span>Distance: </span>{{distance.distance}} km</p>
+                        <p style="font-style: italic;">*Map view may not work for distances >1km</p>
+
+                    </div>
+                </div>
+                <img [src]="imgUrl" style="width: 400px; height: 400px; margin-left: 20px;">
+            </mat-card-content>
+        </mat-card>
+
+    </div>
+
+</mat-drawer-container>

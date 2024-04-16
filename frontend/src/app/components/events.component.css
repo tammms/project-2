@@ -1,0 +1,59 @@
+mat-card{
+    width: 80%;
+    margin: auto;
+    margin-top: 30px;
+    justify-content: center;
+
+}
+
+.field-row{
+    display: flex;
+    align-items: center;
+}
+
+mat-card-title,
+mat-card-content {
+    display: flex;
+    justify-content: center;
+  }
+
+mat-form-field{
+    margin-right: 10px;
+}
+
+.repeat-radio-group {
+    display: flex;
+    flex-direction: column;
+    /* margin: 15px 0; */
+    align-items: flex-start;
+  }
+
+.repeatInput{
+
+    border: none;
+    border-bottom: 1px solid grey;
+    width: 40px;
+    text-align: center;
+    
+}
+
+.reminder-label{
+    font-weight: 500;
+    font-size:medium;
+    margin-bottom: 0;
+}
+
+.description{
+    color: gray;
+}
+
+.error{
+    margin-top: -5px;
+    margin-left: 5px;
+font-size: small;
+}
+
+.main{
+width: 70%;
+}
+

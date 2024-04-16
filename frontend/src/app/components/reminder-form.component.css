@@ -1,0 +1,52 @@
+.mat-form-field {
+    width: 100%;
+    appearance: fill;
+  }
+
+
+  mat-card-content{
+    display: flex;
+    justify-content: center;
+  }
+
+.input-field{
+  width: 80%;
+}
+
+.field-row{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+   margin: 0%;
+}
+
+.frequencies{
+
+  margin-right: 3px;
+  /* margin-top: 3px; */
+  align-items: center; 
+  justify-content: center;
+  width: 450px;
+  margin-bottom: 30px;
+
+}
+
+.containsWeekly{
+  margin-bottom: 30px;
+
+}
+
+mat-chip-option {
+ margin-right: 3px;
+}
+
+.form-label{
+  font-weight:500;
+  font-size: medium;
+}
+
+.reminder{
+  display: flex;
+  align-items: center;
+}
+

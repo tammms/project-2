@@ -1,0 +1,201 @@
+<div class="main">
+    <mat-accordion class="example-headers-align" #accordion="matAccordion" [multi]="true">
+        <!-- <button mat-button (click)="accordion.openAll()">Expand All </button>
+    <button mat-button (click)="accordion.closeAll()">Collapse All </button> -->
+
+        <mat-expansion-panel *ngIf="!isEdit" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Add Existing Patient
+                    <mat-icon>person_search</mat-icon>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <form [formGroup]="existingPatientForm" (submit)="addExistingPatient()">
+                <div class="field-row">
+                    <p>
+                        <mat-form-field appearance="outline">
+                            <input type="text" matInput formControlName="patientId">
+                            <mat-label>Patient ID</mat-label>
+                            <mat-error *ngIf="existingPatientForm.get('patientId')?.hasError('required')">Patient ID
+                                is a
+                                Mandatory Field
+                            </mat-error>
+                            <mat-error *ngIf="existingPatientForm.get('patientId')?.hasError('minlength')">Patient
+                                ID has 8
+                                Characters
+                            </mat-error>
+                            <mat-error *ngIf="existingPatientForm.get('patientId')?.hasError('maxlength')">Patient
+                                ID has 8
+                                Characters
+                            </mat-error>
+
+                        </mat-form-field>
+                    </p>
+
+                    <p>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Relationship</mat-label>
+                            <mat-select formControlName="relationship">
+                                <mat-option value="parent">Parent</mat-option>
+                                <mat-option value="child">Child</mat-option>
+                                <mat-option value="relative">Relative</mat-option>
+                                <mat-option value="friend">Friend</mat-option>
+                            </mat-select>
+                            <mat-hint style="color: #1F7A8C;">Guardian's Relationship with patient</mat-hint>
+                            <mat-error *ngIf="newPatientForm.get('relationship')?.hasError('required')">Relationship
+                                with
+                                patient is a Mandatory
+                                Field
+                            </mat-error>
+                        </mat-form-field>
+                    </p>
+                </div>
+                <button class="buttons" type="submit" mat-raised-button
+                [style.background-color]="newPatientForm.invalid ? 'lightgrey' : '#BFDBF7'"
+                style="margin-top: 15px;"
+                    [disabled]="existingPatientForm.invalid" (click)="accordion.closeAll()">Add Patient
+                    <mat-icon>add_circle</mat-icon>
+                </button>
+
+            </form>
+
+
+
+        </mat-expansion-panel>
+
+        <mat-expansion-panel [expanded]="isEdit" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Create New Patient Profile
+                    <mat-icon>account_circle</mat-icon>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <form [formGroup]="newPatientForm" (submit)="addNewPatient()">
+
+                <div class="field-row">
+                    <p>
+                        <mat-form-field appearance="outline">
+                            <input type="text" formControlName="firstName" matInput>
+                            <mat-label>First Name</mat-label>
+
+                            <mat-error *ngIf="newPatientForm.get('firstName')?.hasError('required')">First Name is a
+                                Mandatory Field
+                            </mat-error>
+                            <mat-error *ngIf="newPatientForm.get('firstName')?.hasError('minlength')">First Name
+                                should
+                                have at least 3 Characters
+                            </mat-error>
+                        </mat-form-field>
+                    </p>
+                    <p>
+                        <mat-form-field appearance="outline">
+                            <input type="text" formControlName="lastName" matInput>
+                            <mat-label>Last Name</mat-label>
+
+                            <mat-error *ngIf="newPatientForm.get('lastName')?.hasError('required')">Last Name is a
+                                Mandatory Field
+                            </mat-error>
+                            <mat-error *ngIf="newPatientForm.get('lastName')?.hasError('minlength')">Last Name
+                                should
+                                have at least 3 Characters
+                            </mat-error>
+                        </mat-form-field>
+                    </p>
+                    <p>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Gender</mat-label>
+                            <mat-select formControlName="gender">
+                                <mat-option value="male">Male</mat-option>
+                                <mat-option value="female">Female</mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="newPatientForm.get('gender')?.hasError('required')">Gender is a
+                                Mandatory
+                                Field
+                            </mat-error>
+                        </mat-form-field>
+                    </p>
+                </div>
+                <div class="field-row">
+                    <p>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Relationship</mat-label>
+                            <mat-select formControlName="relationship">
+                                <mat-option value="parent">Parent</mat-option>
+                                <mat-option value="child">Child</mat-option>
+                                <mat-option value="relative">Relative</mat-option>
+                                <mat-option value="friend">Friend</mat-option>
+                            </mat-select>
+                            <mat-hint style="color: #1F7A8C;">Guardian's Relationship with patient</mat-hint>
+                            <mat-error *ngIf="newPatientForm.get('relationship')?.hasError('required')">Relationship
+                                with
+                                patient is a Mandatory
+                                Field
+                            </mat-error>
+                        </mat-form-field>
+                    </p>
+
+                    <p>
+                        <mat-form-field appearance="outline">
+                            <input type="number" formControlName="phoneNo" matInput>
+                            <mat-label>Phone Number</mat-label>
+
+                            <mat-error *ngIf="newPatientForm.get('phoneNo')?.hasError('pattern')">Invalid Phone
+                                Number
+                                Format
+                            </mat-error>
+                        </mat-form-field>
+                    </p>
+                    <p>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Date of Birth</mat-label>
+                            <input matInput [matDatepicker]="picker" formControlName="birthDate">
+                            <mat-hint style="color: #1F7A8C;">MM/DD/YYYY</mat-hint>
+                            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+
+                            <mat-error *ngIf="newPatientForm.get('birthDate')?.hasError('required')">Date of Birth
+                                is a
+                                Mandatory Field
+                            </mat-error>
+                            <mat-error *ngIf="newPatientForm.get('birthDate')?.hasError('birthDateValidation')">Date
+                                of
+                                Birth cannot be a Future Date!
+                            </mat-error>
+                        </mat-form-field>
+                    </p>
+
+                </div>
+                <div *ngIf="!isEdit ">
+                <button class="buttons" type="submit" mat-raised-button
+                    [style.background-color]="newPatientForm.invalid ? 'lightgrey' : '#BFDBF7'"
+                    style="margin-top: 30px;"
+                    [disabled]="newPatientForm.invalid" (click)="accordion.closeAll()">Add Patient
+                    <mat-icon>add_circle</mat-icon>
+                </button>
+
+                </div>
+
+                <div *ngIf="isEdit " style="width: 80%; height: 80%;">
+                    <button class="buttons" type="button" mat-raised-button
+                    [style.background-color]="newPatientForm.invalid ? 'lightgrey' : '#BFDBF7'"
+                        [disabled]="newPatientForm.invalid" (click)="editPatient()" style="margin-right: 5px;">
+                        Save Changes
+                        <mat-icon>add_circle</mat-icon>
+                    </button>
+                    <button class="buttons" type="button" mat-raised-button 
+                    style="background-color: #1F7A8C; color: #FFFFFF;"
+                        (click)="discardChanges()">Discard Changes
+                        <mat-icon>delete</mat-icon>
+                    </button>
+
+                </div>
+                <!-- <button mat-button
+                    [style.background-color]="newPatientForm.invalid ? 'lightgrey' : '#BFDBF7'" (click)="nextStep()">Next</button> -->
+            </form>
+
+        </mat-expansion-panel>
+    </mat-accordion>
+</div>

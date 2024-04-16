@@ -1,0 +1,52 @@
+<mat-drawer-container style="background-color: #FFFFFF;">
+    <button mat-raised-button (click)="drawer.toggle()"
+        style="width: 100px; height: 100px; margin-top: 5px; margin-left: 5px;">
+        <img class="button-img" src="/assets/icons/logo.png" style="width: 200px; height: 200px;">
+    </button>
+    <mat-drawer #drawer mode="push" style="width: 250px;">
+        <div style="margin-top: 10px; margin-left: 10px;">
+            <button mat-button [routerLink]="['/patients']">
+                <mat-icon>home</mat-icon> Patient DashBoard</button>
+            <button mat-button [routerLink]="['/location']">
+                <mat-icon>health_and_safety</mat-icon>Search Amenities</button>
+            <button mat-button [routerLink]="['/location']">
+                <mat-icon>health_and_safety</mat-icon>Search Amenities</button>
+            <button mat-button [routerLink]="['/guardian']">
+                <mat-icon>account_circle</mat-icon> Account Details</button>
+            <button mat-button [routerLink]="['/']">
+                <mat-icon>logout</mat-icon> Logout</button>
+        </div>
+    </mat-drawer>
+
+    <mat-card style="background-color:#E1E5F2 ;">
+        <mat-card style="margin-top: 50px; margin-bottom: 50px; background-color: #E1E5F2;">
+            <mat-accordion>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Add Scheduled Reminder
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            Schedule reminders for regular events such as medical checkups
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <app-events></app-events>
+                </mat-expansion-panel>
+
+
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Add Daily Reminder
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            Set reminders that occur multiple times within a day
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <app-daily-form></app-daily-form>
+                </mat-expansion-panel>
+            </mat-accordion>
+
+        </mat-card>
+    </mat-card>
+</mat-drawer-container>

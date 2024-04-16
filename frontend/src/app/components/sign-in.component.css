@@ -1,0 +1,23 @@
+mat-card{
+    width: 40%;
+    margin: auto;
+    margin-top: 30px;
+    background-color: #e1e5f2;
+}
+
+
+.mat-form-field {
+    width: 100%;
+    appearance:"fill"
+  }
+
+mat-card-title,
+mat-card-content {
+  margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    
+  }
+
+
+

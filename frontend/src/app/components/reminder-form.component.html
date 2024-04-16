@@ -1,0 +1,174 @@
+<mat-card>
+
+    <!-- <mat-card-title>Schedule Timing</mat-card-title> -->
+
+
+    <mat-card-content>
+        
+        <form [formGroup]="reminderTimingsForm" (submit)="setTime()">
+            <div class="reminder">
+                <p class="form-label">Send Reminders</p>
+                <mat-slide-toggle (change)="toRemind($event)" [checked]="sendReminder"
+                color="primary"
+                 style="margin-left: 5px;"></mat-slide-toggle>
+            </div>
+            <mat-accordion >
+                <mat-expansion-panel [disabled]="!sendReminder"
+                [expanded]="sendReminder">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title class="form-label">
+                          Settings
+                        </mat-panel-title>
+                      </mat-expansion-panel-header>
+                
+            <div class="frequencies">
+                <p class="form-label">Select Daily Reminder Frequency:</p>
+
+                <mat-chip-option *ngFor="let freq of frequencyCategory"
+                [style.background-color]="isReminderSelected(freq.value) && !isDisabled(freq.value)  ? '#1F7A8C' : 'lightgrey'"
+
+                
+
+                    [selected]="isReminderSelected(freq.value)" [disabled]="isDisabled(freq.value)"
+                    (selectionChange)="chipChange($event, freq.value)">
+                    {{freq.displayValue}}</mat-chip-option>
+
+                    <div *ngIf="reminderList.length<1">
+                        <p style="color: red;">*Please select Reminder Schedule Timings</p>
+                    </div>
+            </div>
+            <div class="containsWeekly" *ngIf="containsWeekly()">
+                <p class="form-label">Start Day for Weekly Medication Reminder</p>
+                <mat-form-field appearance="outline">
+                    <div class="field-row" style="margin-bottom: 10px; margin-top: 10px;">
+                        <mat-select (valueChange)="changeWeeklyStart($event)" [value]="weeklyStart">
+                            <mat-option *ngFor="let day of weekOptions"
+                                [value]="day.value">{{day.displayValue}}</mat-option>
+                        </mat-select>
+                    </div>
+                </mat-form-field>
+                <div *ngIf="containsBoth()">
+                <mat-slide-toggle (change)="setWeekly($event)" [checked]="hasWeekly"
+                color="primary">Only Send Weekly Reminders</mat-slide-toggle>
+            </div>
+
+            </div>
+            <div>
+                <p class="form-label">Reminder Timings</p>
+            </div>
+            <div class="field-row">
+                <p>
+                    <mat-form-field class="input-field" appearance="outline">
+                        <input type="text" formControlName="beforeBreakfast" matInput placeholder="00:00">
+                        <mat-label>Before Breakfast</mat-label>
+                        <mat-error *ngIf="reminderTimingsForm.get('beforeBreakfast')?.hasError('required')">Reminder
+                            Time is a Mandatory Field
+                        </mat-error>
+                        <mat-error *ngIf="reminderTimingsForm.get('beforeBreakfast')?.hasError('pattern')">Invalid Time
+                            format
+                        </mat-error>
+                        <!-- <mat-error *ngIf="reminderTimingsForm.get('beforeBreakfast')?.hasError('timeValidationNext')">Cannot be Later than Upcoming reminder
+                        </mat-error> -->
+                    </mat-form-field>
+                </p>
+                <p>
+                    <mat-form-field class="input-field" appearance="outline">
+                        <input type="text" formControlName="afterBreakfast" matInput placeholder="00:00">
+                        <mat-label>After Breakfast</mat-label>
+                        <mat-error *ngIf="reminderTimingsForm.get('afterBreakfast')?.hasError('required')">Reminder
+                            is a Mandatory Field
+                        </mat-error>
+                        <mat-error *ngIf="reminderTimingsForm.get('afterBreakfast')?.hasError('pattern')">Invalid Time
+                            format
+                        </mat-error>
+                        <!-- <mat-error *ngIf="reminderTimingsForm.get('afterBreakfast')?.hasError('timeValidationPrev')">Cannot be earlier than Previous reminder
+                        </mat-error>
+                        <mat-error *ngIf="reminderTimingsForm.get('afterBreakfast')?.hasError('timeValidationNext')">Cannot be Later than Upcoming reminder
+                        </mat-error> -->
+                    </mat-form-field>
+                </p>
+            </div>
+            <div class="field-row">
+                <p>
+                    <mat-form-field class="input-field" appearance="outline">
+                        <input type="text" formControlName="beforeLunch" matInput placeholder="00:00">
+                        <mat-label>Before Lunch</mat-label>
+                        <mat-error *ngIf="reminderTimingsForm.get('beforeLunch')?.hasError('required')">Reminder is
+                            a Mandatory Field
+                        </mat-error>
+                        <mat-error *ngIf="reminderTimingsForm.get('beforeLunch')?.hasError('pattern')">Invalid Time
+                            format
+                        </mat-error>
+                        <!-- <mat-error *ngIf="reminderTimingsForm.get('beforeLunch')?.hasError('timeValidationPrev')">Cannot be earlier than Previous reminder
+                        </mat-error>
+                        <mat-error *ngIf="reminderTimingsForm.get('beforeLunch')?.hasError('timeValidationNext')">Cannot be Later than Upcoming reminder
+                        </mat-error> -->
+                    </mat-form-field>
+                </p>
+
+                <p>
+                    <mat-form-field class="input-field" appearance="outline">
+                        <input type="text" formControlName="afterLunch" matInput placeholder="00:00">
+                        <mat-label>After Lunch</mat-label>
+                        <mat-error *ngIf="reminderTimingsForm.get('afterLunch')?.hasError('required')">Reminder is
+                            a Mandatory Field
+                        </mat-error>
+                        <mat-error *ngIf="reminderTimingsForm.get('afterLunch')?.hasError('pattern')">Invalid Time
+                            format
+                        </mat-error>
+                        <!-- <mat-error *ngIf="reminderTimingsForm.get('afterLunch')?.hasError('timeValidationPrev')">Cannot be earlier than Previous reminder
+                        </mat-error>
+                        <mat-error *ngIf="reminderTimingsForm.get('afterLunch')?.hasError('timeValidationNext')">Cannot be Later than Upcoming reminder
+                        </mat-error> -->
+                    </mat-form-field>
+                </p>
+            </div>
+            <div class="field-row">
+                <p>
+                    <mat-form-field class="input-field" appearance="outline">
+                        <input type="text" formControlName="beforeDinner" matInput placeholder="00:00">
+                        <mat-label>Before Dinner</mat-label>
+                        <mat-error *ngIf="reminderTimingsForm.get('beforeDinner')?.hasError('required')">Reminder
+                            is a Mandatory Field
+                        </mat-error>
+                        <mat-error *ngIf="reminderTimingsForm.get('beforeDinner')?.hasError('pattern')">Invalid Time
+                            format
+                        </mat-error>
+                        <!-- <mat-error *ngIf="reminderTimingsForm.get('beforeDinner')?.hasError('timeValidationPrev')">Cannot be earlier than Previous reminder
+                        </mat-error>
+                        <mat-error *ngIf="reminderTimingsForm.get('beforeDinner')?.hasError('timeValidationNext')">Cannot be Later than Upcoming reminder
+                        </mat-error> -->
+                    </mat-form-field>
+                </p>
+                <p>
+                    <mat-form-field class="input-field" appearance="outline">
+                        <input type="text" formControlName="afterDinner" matInput placeholder="00:00">
+                        <mat-label>After Dinner</mat-label>
+                        <mat-error *ngIf="reminderTimingsForm.get('afterDinner')?.hasError('required')">Reminder is
+                            a Mandatory Field
+                        </mat-error>
+                        <mat-error *ngIf="reminderTimingsForm.get('afterDinner')?.hasError('pattern')">Invalid Time
+                            format
+                        </mat-error>
+                        <!-- <mat-error *ngIf="reminderTimingsForm.get('afterDinner')?.hasError('timeValidationPrev')">Cannot be earlier than Previous reminder
+                        </mat-error> -->
+                        
+                    </mat-form-field>
+                </p>
+                
+            </div>
+            <div>
+                <button type="button" mat-raised-button matTooltip="Reset to Default Timings"
+                (click)="resetForm()">Reset</button>
+                <button type="submit" [disabled]="isInvalid()"
+                mat-raised-button
+                [style.background-color]="isInvalid() ? 'lightgrey' : '#1F7A8C'"
+                 mat-raised-button matTooltip="Save Reminder Settings" color="accent">Save</button>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+   
+        </form>
+
+    </mat-card-content>
+</mat-card>
