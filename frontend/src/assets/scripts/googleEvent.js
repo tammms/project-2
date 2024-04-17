@@ -1,5 +1,5 @@
-const CLIENT_ID = "1082244665867-kdarojfsvru3q4vl175fph7i2gb3cu4j.apps.googleusercontent.com"
-const API_KEY = "AIzaSyDvHcdQr0rkGfODYcZIFtMtQ27fxZUEMYM"
+const CLIENT_ID = "NOT_SET"
+const API_KEY = "NOT_SET"
 
 const DISCOVERY_DOC =
   "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest";
